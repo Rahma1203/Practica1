@@ -8,7 +8,6 @@ const WebPageList = () => {
     const [paginaSeleccionada, setPaginaSeleccionada] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [ordenarPorPuntuacion, setOrdenarPorPuntuacion] = useState(false); // Estado para controlar el orden
 
     useEffect(() => {
         const fetchWebPages = async () => {
@@ -33,19 +32,6 @@ const WebPageList = () => {
 
         fetchWebPages();
     }, [filtros]);
-
-    // Función para ordenar las páginas por puntuación
-    const ordenarPaginaporPuntuacion = () => {
-        setOrdenarPorPuntuacion(prev => !prev); // Cambiar entre ascendente y descendente
-        setWebPages(prevWebPages => {
-            const ordenadas = [...prevWebPages].sort((a, b) => {
-                const puntuacionA = a.puntuacion || 0; // Valor predeterminado 0 si no tiene puntuación
-                const puntuacionB = b.puntuacion || 0;
-                return ordenarPorPuntuacion ? puntuacionB - puntuacionA : puntuacionA - puntuacionB; // Ascendente o descendente
-            });
-            return ordenadas;
-        });
-    };
 
     const handleFiltroCambio = (e) => {
         const { name, value } = e.target;
@@ -87,14 +73,6 @@ const WebPageList = () => {
                     <option value="Tienda de ropa">Tienda de ropa</option>
                     <option value="Hotel">Hotel</option>
                 </select>
-
-                {/* Botón para ordenar por puntuación */}
-                <button 
-                    onClick={ordenarPaginaporPuntuacion} 
-                    className="ml-2 p-2 border rounded bg-blue-500 text-white"
-                >
-                    {ordenarPorPuntuacion ? 'Ordenar por puntuación (Ascendente)' : 'Ordenar por puntuación (Descendente)'}
-                </button>
             </div>
 
             <div className="web-page-list">
@@ -134,7 +112,7 @@ const WebPageList = () => {
                                                 ))}
                                             </ul>
                                             <p><strong>Puntuación media:</strong>
-                                                {paginaSeleccionada.resenas.resenas.reduce((acc, current) =>  acc + parseFloat(current.puntuacion), 0) / paginaSeleccionada.resenas.resenas.length} / 5
+                                                {paginaSeleccionada.resenas.resenas.reduce((acc, resena) => acc + resena.puntuacion, 0) / paginaSeleccionada.resenas.resenas.length} / 5
                                             </p>
                                         </div>
                                     ) : (
@@ -157,4 +135,3 @@ const WebPageList = () => {
 };
 
 export default WebPageList;
-
